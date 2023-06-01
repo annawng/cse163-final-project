@@ -7,7 +7,7 @@ import plotly.express as px
 # What factors resulted in the greatest amount of assault offenses in Seattle in 2022?
 # Time -> Pie Chart, MCPP -> Bar Chart, Sector -> GeoPandas
 def plot_assault_factors_2022(data: pd.DataFrame) -> None:
-    # Filter data by time of offense, only aasault cases, and MCPP (area)
+    # Filter data by time of offense, only assault cases, and MCPP (area)
     data = data[['Offense Start DateTime', 'Offense Parent Group','MCPP']].dropna()
     data['Offense Start DateTime'] = pd.to_datetime(data['Offense Start DateTime'])
     # df['date_col'].dt.strftime('%H:%M') another possible way to filter time
