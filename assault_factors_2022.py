@@ -1,12 +1,18 @@
+"""
+Joey Kang, Eric Kim, and Anna Wang
+CSE 163
+Analyzes and plots Seattle Police Department crime data to determine what
+factors resulted in the greatest number of assault offenses in Seattle in 2022.
+"""
 import pandas as pd
-import geopandas as gpd
-import matplotlib.pyplot as plt
 import plotly.express as px
 
 
-# What factors resulted in the greatest amount of assault offenses in
-# Seattle in 2022?
-def plot_assault_factors_2022(data: pd.DataFrame) -> None:
+def plot_assaults_by_time_2022(data: pd.DataFrame) -> None:
+    """
+    Creates a bar chart of the assault offenses committed during each hour
+    during the day in 2022, using `data`, the SPD crime dataset.
+    """
     data = data[['Offense Start DateTime',
                  'Offense Parent Group']].dropna()
     data['Offense Start DateTime'] = \
@@ -32,26 +38,22 @@ def plot_assault_factors_2022(data: pd.DataFrame) -> None:
         )
     )
 
-    fig.write_image('./results/assault_factors_2022.jpg')
+    fig.write_image('./results/assaults_by_time_2022.jpg')
 
 
-def merge_data(shp_file: str, csv_file: str) -> gpd.GeoDataFrame:
-    geospatial_data = gpd.read_file(shp_file)
-    spd_data = pd.read_csv(csv_file)
-
-    # if doesnt work try how=inner or on
-    merged_gdf = geospatial_data.merge(spd_data, left_on='sector',
-                                       right_on='Sector', how='outer')
-    return merged_gdf
-
-
-def plot_geo_data(data: gpd.GeoDataFrame) -> None:
-    data.plot()
-    fig, ax = plt.subplots(1)
-    # data = data[['sector', 'geometry', 'Offense Parent Group']]
-    # data = data[data['Offense Parent Group'] == "ASSAULT OFFENSES"]
-    # data = data.dissolve(by='sector', aggfunc='count')
-    # print(data.head(10))
-    # data.plot(ax=ax, column='Count', legend=True)
-    # plt.title("Assault Offenses by Sector")
-    plt.savefig('./results/assault_offense_map.png')
+def plot_assaults_by_location_2022(data: pd.DataFrame) -> None:
+    """
+    Creates a bar chart of the assault offenses committed in each MCPP in 2022,
+    using `data`, the SPD crime dataset. MCPP stands for Micro-Community
+    Policing Plans and essentially refers to neighborhoods in Seattle.
+    """
+    data = data[['Offense Parent Group', 'MCPP']].dropna()
+    data = data[data['Offense Parent Group'] == "ASSAULT OFFENSES"]
+    data = (
+        data.groupby('MCPP')['MCPP'].count()
+        .reset_index(name="Count")
+    )
+    data = data.sort_values('Count', ascending=False)
+    fig = px.bar(data, x='MCPP', y='Count',
+                 title='Number of Assault Offenses Per MCPP')
+    fig.write_image('./results/assaults_by_location_2022.jpg')
