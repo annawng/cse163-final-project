@@ -14,6 +14,7 @@ from assault_offenses_over_time import plot_assault_offenses_over_time
 from assault_factors_2022 import plot_assaults_by_time_2022
 from assault_factors_2022 import plot_assaults_by_location_2022
 from predicting_offenses import predict_offense_type
+from predicting_offenses import test_filtering
 
 
 DATASET = './data/SPD_Crime_Data__2008-Present.csv'
@@ -22,16 +23,18 @@ TESTDATA = './data/SPD_Test_Data.csv'
 
 def main():
     data = pd.read_csv(DATASET)
-    plot_assault_offenses_over_time(data)
-    plot_assaults_by_time_2022(data)
-    plot_assaults_by_location_2022(data)
+    plot_assault_offenses_over_time(data, 'assault_offenses_over_time.jpg')
+    plot_assaults_by_time_2022(data, 'assaults_by_time_2022.jpg')
+    plot_assaults_by_location_2022(data, 'assaults_by_location_2022.jpg')
     predict_offense_type(data)
-    
+
     test_data = pd.read_csv(TESTDATA)
-    plot_assault_offenses_over_time(test_data)
-    plot_assaults_by_time_2022(test_data)
-    plot_assaults_by_location_2022(test_data)
-    predict_offense_type(test_data)
+    plot_assault_offenses_over_time(test_data,
+                                    'test_assault_offenses_over_time.jpg')
+    plot_assaults_by_time_2022(test_data, 'test_assaults_by_time_2022.jpg')
+    plot_assaults_by_location_2022(test_data,
+                                   'test_assaults_by_location_2022.jpg')
+    test_filtering(test_data)
 
 
 if __name__ == '__main__':

@@ -30,7 +30,7 @@ def predict_offense_type(data: pd.DataFrame) -> None:
     features = pd.get_dummies(features)
     labels = data['Offense Parent Group']
     features_train, features_test, labels_train, labels_test = \
-        train_test_split(features, labels, test_size=0.3, random_state=0)
+        train_test_split(features, labels, test_size=0.3)
 
     # Train the model
     knn = KNeighborsClassifier(n_neighbors=7).fit(features_train, labels_train)
@@ -38,3 +38,24 @@ def predict_offense_type(data: pd.DataFrame) -> None:
     # Assess the model
     accuracy = knn.score(features_test, labels_test)
     print(f'Accuracy: {accuracy}')
+
+
+def test_filtering(data: pd.DataFrame) -> None:
+    """
+    Tests the preprocessing filtering using `data`, which is a small subset of
+    the SPD crime dataset.
+    """
+    data = data[['Offense Start DateTime', 'Offense Parent Group',
+                'MCPP']].dropna()
+    print(data)
+    data['DateTime'] = pd.to_datetime(
+        data['Offense Start DateTime'])
+    data['Hour'] = data['DateTime'].dt.hour
+    data['Year'] = data['DateTime'].dt.year.astype(int)
+    print(data)
+    data = data[data['Year'] >= 2020]
+    print(data)
+
+    data = data[['Hour', 'Offense Parent Group',
+                'MCPP']]
+    print(data)

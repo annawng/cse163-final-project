@@ -8,10 +8,12 @@ import pandas as pd
 import plotly.express as px
 
 
-def plot_assaults_by_time_2022(data: pd.DataFrame) -> None:
+def plot_assaults_by_time_2022(data: pd.DataFrame,
+                               output_file_name: str) -> None:
     """
     Creates a bar chart of the assault offenses committed during each hour
-    during the day in 2022, using `data`, the SPD crime dataset.
+    during the day in 2022, using `data`, the SPD crime dataset. Saves the
+    chart with the name `output_file_name` in the results folder.
     """
     data = data[['Offense Start DateTime',
                  'Offense Parent Group']].dropna()
@@ -38,14 +40,16 @@ def plot_assaults_by_time_2022(data: pd.DataFrame) -> None:
         )
     )
 
-    fig.write_image('./results/assaults_by_time_2022.jpg')
+    fig.write_image(f'./results/{output_file_name}')
 
 
-def plot_assaults_by_location_2022(data: pd.DataFrame) -> None:
+def plot_assaults_by_location_2022(data: pd.DataFrame,
+                                   output_file_name: str) -> None:
     """
     Creates a bar chart of the assault offenses committed in each MCPP in 2022,
     using `data`, the SPD crime dataset. MCPP stands for Micro-Community
-    Policing Plans and essentially refers to neighborhoods in Seattle.
+    Policing Plans and essentially refers to neighborhoods in Seattle. Saves
+    the chart with the name `output_file_name` in the results folder.
     """
     data = data[['Offense Parent Group', 'MCPP']].dropna()
     data = data[data['Offense Parent Group'] == "ASSAULT OFFENSES"]
@@ -56,4 +60,4 @@ def plot_assaults_by_location_2022(data: pd.DataFrame) -> None:
     data = data.sort_values('Count', ascending=False)
     fig = px.bar(data, x='MCPP', y='Count',
                  title='Number of Assault Offenses Per MCPP')
-    fig.write_image('./results/assaults_by_location_2022.jpg')
+    fig.write_image(f'./results/{output_file_name}')

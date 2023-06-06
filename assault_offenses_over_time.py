@@ -11,10 +11,12 @@ import pandas as pd
 import plotly.express as px
 
 
-def plot_assault_offenses_over_time(data: pd.DataFrame) -> None:
+def plot_assault_offenses_over_time(data: pd.DataFrame,
+                                    output_file_name: str) -> None:
     """
     Creates a line chart of the assault offenses committed over time from 2008
-    to 2022, using `data`, the SPD crime dataset.
+    to 2022, using `data`, the SPD crime dataset. Saves the chart with the name
+    `output_file_name` in the results folder.
     """
     data = data[['Offense Start DateTime', 'Offense Parent Group']].dropna()
     data['Offense Start DateTime'] = pd.to_datetime(
@@ -25,6 +27,6 @@ def plot_assault_offenses_over_time(data: pd.DataFrame) -> None:
         data.groupby('Year')['Offense Parent Group'].count()
         .reset_index(name="Count")
     )
-    fig = px.line(data, x='Year', y='Count',
-                  title='Assault Offenses in Seattle Over Time (2008-2022)')
-    fig.write_image('./results/assault_offenses_over_time.jpg')
+    fig = px.scatter(data, x='Year', y='Count',
+                     title='Assault Offenses in Seattle Over Time (2008-2022)')
+    fig.write_image(f'./results/{output_file_name}')
